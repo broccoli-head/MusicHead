@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'strona/styl.css' %}">
+    <title>{% block tytul %}MusicHead{% endblock %}</title>
+</head>
+
+<body>
+    <nav>
+        <ul class="menu">
+            <li><a href="#">Strona główna</a></li>
+            <li><a href="#">Dodaj Piosenkę</a></li>
+            <li><a href="#">Zaloguj się</a></li>
+        </ul>
+    </nav>
+    {% block tresc %}
+        <p>Tu powinna być treść strony</p>
+    {% endblock %}
+</body>
+
+</html>

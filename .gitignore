@@ -1,0 +1,6 @@
+# foldery
+__pycache__/
+migrations/
+
+# baza danych
+db.sqlite3
