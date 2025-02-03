@@ -5,16 +5,17 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'strona/styl.css' %}">
+    <link rel="stylesheet" href="{% static 'styl.css' %}">
+    <link rel="icon" href="{% static 'icons/headphones.png' %}">
     <title>{% block tytul %}MusicHead{% endblock %}</title>
 </head>
 
 <body>
     <nav>
         <ul class="menu">
-            <li><a href="#">Strona główna</a></li>
-            <li><a href="#">Dodaj Piosenkę</a></li>
-            <li><a href="#">Zaloguj się</a></li>
+            <li><a href="/strona"><img src="{% static 'icons/home.svg' %}">Strona Główna</a></li>
+            <li><a href="/strona/dodaj"><img src="{% static 'icons/add.svg' %}">Dodaj Piosenkę</a></li>
+            <li><a href="#"><img src="{% static 'icons/face.svg' %}">Zaloguj się</a></li>
         </ul>
     </nav>
     {% block tresc %}
