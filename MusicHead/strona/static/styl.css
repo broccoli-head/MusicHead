@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: Calibri;
+    font-family: Calibri, 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
     font-weight: bold;
 }
 
@@ -9,6 +9,7 @@ nav {
     background: #344585;
     padding: 5px;  
 }
+
 .menu {
     display: flex;
     justify-content: center;
@@ -37,7 +38,12 @@ nav {
 }
 
 main {
-    margin: 40px;
+    margin: 40px 15vw;
+}
+main h1 {
+    margin-bottom: 40px;
+    text-align: center;
+    font-family: "Arial Black";
 }
 
 form label {
@@ -45,27 +51,95 @@ form label {
     margin-right: 30px;
 }
 form input {
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+#dodajPiosenke {
+    display: flex;
+    flex-direction: row;
+}
+#lewyPanel {
+    margin-left: 30px;
+    flex: 65%;
+}
+#prawyPanel {
+    flex: 35%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pole {
     font-size: 1.2em;
     border: none;
     border-bottom: 2px solid black;
     outline: none;
-    padding: 5px;
-    margin-bottom: 10px;
 }
-form input:focus {
+.pole:focus {
     border-bottom: 3px solid #344585;
 }
-form button {
+.poleData {
+    font-family: Arial, Helvetica, sans-serif;
+}
+.poleLink {
+    width: 470px;
+}
+
+#polePlik {
+    display: none;
+}
+#prawyInput {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#zatwierdz, #przeslijZdjecie {
     background-color: #344585;
     color: white;
     font-weight: bold;
     border: none;
     border-radius: 15px;
-    padding: 10px 15px;
-    font-size: 1.4em;
     cursor: pointer;
     transition: 0.2s ease-in-out;
 }
-form button:hover {
+
+#przeslijZdjecie {
+    width: max-content;
+    height: max-content;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+}
+#przeslijZdjecie:hover {
     background-color: #495fad;
+}
+
+#zatwierdz {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    font-size: 1.7em;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#zatwierdz:hover {
+    background-color: rgb(31, 129, 31);
+    box-shadow: 0 5px rgb(19, 68, 19);
+}
+#zatwierdz img {
+    width: 40px;
+}
+
+#podgladZdjecia {
+    display: none;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    margin-top: 20px;
+    border: dashed 3px #303959;
 }

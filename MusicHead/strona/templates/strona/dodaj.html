@@ -1,14 +1,39 @@
 {% extends "strona/base.html" %}
-
+{% load static %}
 {% block tytul %}Dodaj piosenkę - MusicHead{% endblock %}
 
 {% block tresc %}
 <main>
-    <h2>Dodaj piosenkę</h2>
+    <h1>DODAJ PIOSENKĘ</h1>
     <form>
-        <label>Tytuł:</label><input type="text"><br>
-        <label>Wykonawcy:</label><input type="text"><br>
-        <button type="submit">Dodaj</button>
+        <div id="dodajPiosenke">
+            <div id="lewyPanel">
+                <label>Tytuł:</label><input class="pole" type="text"><br>
+                <label>Wykonawcy:</label><input class="pole" type="text"><br>
+                <label>Album:</label><input class="pole" type="text"><br>
+                <label>Gatunek:</label><input class="pole" type="text"><br>
+                <label>Data wydania:</label><input class="poleData" type="date"><br>
+                <label>Youtube URL:</label>
+                <input type="url" class="pole poleLink" placeholder="np. https://www.youtube.com/watch?v=linkdopiosenki"><br>
+            </div>
+            <div id="prawyPanel">
+                <div id="prawyInput">
+                    <label>Okładka:</label>
+                    <label id="przeslijZdjecie">
+                        <img src="{% static 'icons/upload.svg' %}">
+                        Dodaj zdjęcie
+                        <input type="file" id="polePlik" accept=".png, .jpg, .jpeg">
+                    </label>
+                </div>
+                <img id="podgladZdjecia" src="">
+            </div>
+        </div>
+        <button type="submit" id="zatwierdz">
+            <img src="{% static 'icons/next.svg' %}">
+            Zatwierdź
+            <img src="{% static 'icons/next.svg' %}">
+        </button>
     </form>
 </main>
+<script src="{% static 'podgladZdjecia.js' %}"></script>
 {% endblock %}
