@@ -1,0 +1,15 @@
+{% extends "strona/base.html" %}
+
+{% block tytul %}Zarejestruj się - MusicHead{% endblock %}
+
+{% block tresc %}
+<main>
+    <h1>Rejestracja</h1>
+    <form class="login" method="post">
+        {% csrf_token %}
+        <p id="loginOpcja">Jeśli posiadasz już konto, <a href="/login">zaloguj się</a>.</p>
+        {{ form.as_p }}
+        <button type="submit">Zarejestruj się</button>
+    </form>
+</main>
+{% endblock %}

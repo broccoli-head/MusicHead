@@ -1,0 +1,12 @@
+{% extends "strona/base.html" %}
+{% load static %}
+{% block tytul %}Dodaj piosenkę - MusicHead{% endblock %}
+
+{% block tresc %}
+<main>
+    <div class="blad">
+        <img src="{% static 'icons/warning.svg' %}">
+        <p>Aby dodać piosenkę, musisz się <a href="/login">zalogować</a></p>
+    </div>  
+</main>
+{% endblock %}

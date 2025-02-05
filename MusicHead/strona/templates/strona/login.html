@@ -1,0 +1,19 @@
+{% extends "strona/base.html" %}
+
+{% block tytul %}Zaloguj się - MusicHead{% endblock %}
+
+{% block tresc %}
+<main>
+    <h1>Logowanie</h1>
+    <form class="login" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="zapamietaj">
+            <input type="checkbox" name="zapamietaj" checked>
+            <label>Zapamiętaj mnie</label><br>
+        </div>
+        <button type="submit">Zaloguj się</button>
+        <p id="rejestracjaOpcja">Nie masz konta? <a href="/rejestracja">Zarejestruj się!</a></p>
+    </form>
+</main>
+{% endblock %}

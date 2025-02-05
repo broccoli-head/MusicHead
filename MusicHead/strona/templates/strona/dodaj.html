@@ -5,19 +5,36 @@
 {% block tresc %}
 <main>
     <h1>DODAJ PIOSENKĘ</h1>
-    <p id="wiadomosc" class="blad">{{ wiadomosc }}</p>
+    {% if wiadomosc %}
+    <div class="blad">
+        <img src="{% static 'icons/warning.svg' %}">
+        <p>{{ wiadomosc }}</p>
+    </div>
+    {% endif %}
     <form id="formularz" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div id="dodajPiosenke">
             <div id="lewyPanel">
-                <label>Tytuł:</label><input type="text" name="tytul" class="pole" maxlength="255" required><br>
-                <label>Wykonawcy:</label><input type="text" name="wykonawcy" class="pole" maxlength="255" required><br>
-                <label>Album:</label><input type="text" name="album" class="pole" maxlength="255"><br>
-                <label>Gatunek:</label><input type="text" name="gatunek" class="pole" maxlength="100"><br>
-                <label>Data wydania:</label><input type="date" name="data" class="poleData"><br>
+                <label>Tytuł<span class="czerwony">*</span>:</label>
+                <input type="text" name="tytul" class="pole" maxlength="255" required><br>
+
+                <label>Wykonawcy<span class="czerwony">*</span>:</label>
+                <input type="text" name="wykonawcy" class="pole" maxlength="255" required><br>
+
+                <label>Album:</label>
+                <input type="text" name="album" class="pole" maxlength="255"><br>
+
+                <label>Gatunek:</label>
+                <input type="text" name="gatunek" class="pole" maxlength="100"><br>
+
+                <label>Data wydania:</label>
+                <input type="date" name="data" class="poleData"><br>
+
                 <label>Youtube URL:</label>
                 <input id="urlInput" type="url" name="link" class="pole poleLink" placeholder="np. https://www.youtube.com/watch?v=linkdopiosenki">
-                <p id="urlError" class="blad">Wprowadź poprawny URL! Przykład: https://www.youtube.com/watch?v=linkdopiosenki</p>
+                <p id="urlError">Wprowadź poprawny URL! Przykład: https://www.youtube.com/watch?v=linkdopiosenki</p>
+                
+                <p class="czerwony">* wymagane</p>
             </div>
             <div id="prawyPanel">
                 <div id="prawyInput">
@@ -38,5 +55,5 @@
         </button>
     </form>
 </main>
-<script src="{% static 'podgladZdjecia.js' %}"></script>
+<script src="{% static 'dodajPiosenke.js' %}"></script>
 {% endblock %}
