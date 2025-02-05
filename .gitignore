@@ -1,6 +1,7 @@
 # foldery
 __pycache__/
 migrations/
+media/
 
 # baza danych
 db.sqlite3

@@ -7,22 +7,25 @@ body {
 
 nav {
     background: #344585;
-    padding: 5px;  
+    position: fixed;
+    width: 100vw;
+    top: 0;
+    box-shadow: 0 0 5px black;
 }
 
 .menu {
     display: flex;
     justify-content: center;
     list-style: none;
-}
-.menu li {
-    margin: 0 15px;
+    margin: 0;
+    padding: 15px 0;
+    gap: 5vw;
 }
 .menu a {
     text-decoration: none;
     color: white;
     font-size: 1.2em;
-    padding: 10px 15px;
+    padding: 5px 15px;
     display: flex;
     align-items: center;
     border-radius: 15px;
@@ -38,7 +41,7 @@ nav {
 }
 
 main {
-    margin: 40px 15vw;
+    margin: 120px 15vw;
 }
 main h1 {
     margin-bottom: 40px;
@@ -102,7 +105,7 @@ form input {
     border: none;
     border-radius: 15px;
     cursor: pointer;
-    transition: 0.2s ease-in-out;
+    transition: 0.2s;
 }
 
 #przeslijZdjecie {
@@ -142,4 +145,17 @@ form input {
     object-fit: cover;
     margin-top: 20px;
     border: dashed 3px #303959;
+}
+
+.blad {
+    color: red;
+    font-weight: bold;
+}
+#wiadomosc {
+    font-size: 1.4em;
+    text-align: center;
+}
+#urlError {
+    display: none;
+    margin: 0;
 }
