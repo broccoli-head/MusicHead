@@ -1,0 +1,12 @@
+{% extends "strona/base.html" %}
+{% load static %}
+{% block tytul %}{{ piosenka.tytul }} - {{ piosenka.wykonawcy}} {% endblock %}
+
+{% block tresc %}
+<main>
+    <h2>MusicHead - opinie o piosenkach</h2>
+    <div>
+        <p>{{ piosenka.tytul }} - {{ piosenka.wykonawcy}}</p>
+    </div>
+</main>
+{% endblock %}

@@ -4,10 +4,17 @@
 
 {% block tresc %}
 <main>
-    <h2>MusicHead - opinie o piosenkach</h2>
+    <h1>MusicHead - opinie o piosenkach</h1>
     <div>
-        <p>Nie dodano jeszcze żadnych piosenek.</p>
-        <p>Bądź pierwszy - <a href="/dodaj">DODAJ PIOSENKĘ</a></p>
+        <ul>
+            {% for piosenka in piosenki %}
+                <li>
+                    <a href="/piosenka/{{ piosenka.id }}">{{ piosenka.tytul }} - {{ piosenka.wykonawcy}}</a>
+                </li> 
+                {% empty %}
+                <p>Bądź pierwszy - <a href="/dodaj">DODAJ PIOSENKĘ</a></p>
+            {% endfor %}
+        </ul>
     </div>
 </main>
 {% endblock %}

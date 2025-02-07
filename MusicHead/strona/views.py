@@ -4,7 +4,8 @@ from django.shortcuts import render, redirect
 from .models import Piosenka
 
 def glowna(request):
-    return render(request, "strona/glowna.html")
+    piosenki = Piosenka.objects.order_by('-id')[:10]
+    return render(request, "strona/glowna.html", {'piosenki': piosenki})
 
 
 def rejestracja(request):
@@ -52,11 +53,11 @@ def dodaj_piosenke(request):
 
         if not tytul or not wykonawcy:
             wiadomosc = "Pola tytuł oraz wykonawcy są obowiązkowe!"
-            return render(request, "strona/dodaj.html", {"wiadomosc":wiadomosc});
+            return render(request, "strona/dodaj.html", {"wiadomosc": wiadomosc});
     
         if Piosenka.objects.filter(tytul=tytul, wykonawcy=wykonawcy).exists():
             wiadomosc = f'Piosenka o tytule "{tytul}" artysty {wykonawcy} istnieje już w bazie danych!'
-            return render(request, "strona/dodaj.html", {"wiadomosc":wiadomosc});  
+            return render(request, "strona/dodaj.html", {"wiadomosc": wiadomosc});  
     
         data = request.POST.get("data") if request.POST.get("data") else None   #bez tej linii wyrzuca błąd invalid format data jezeli pole jest puste
 
@@ -72,3 +73,8 @@ def dodaj_piosenke(request):
         piosenka.save()
         
     return render(request, "strona/dodaj.html")
+
+
+def informacje(request, piosenkaID):
+    piosenka = Piosenka.objects.get(id = piosenkaID)
+    return render(request, 'strona/informacje.html', {"piosenka": piosenka})
