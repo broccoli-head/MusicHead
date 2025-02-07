@@ -41,13 +41,17 @@ nav {
 }
 
 main {
-    margin: 120px 15vw;
+    margin: 120px 0;
     margin-bottom: 0;
 }
 main h1 {
     margin-bottom: 40px;
     text-align: center;
     font-family: "Arial Black";
+}
+
+.margines {
+    margin: 120px 15vw;
 }
 
 form label {
@@ -148,7 +152,6 @@ form input {
     width: 200px;
     height: 200px;
     object-fit: cover;
-    margin-top: 20px;
     border: dashed 3px #303959;
 }
 
@@ -233,4 +236,91 @@ form .errorlist {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
+}
+
+.bezOkladki {
+    width: 100px;
+    background-color: #303959;
+}
+
+.blok {
+    display: block;
+    width: fit-content;
+    margin-left: auto; 
+    margin-right: auto;
+}
+.blok p {
+    margin: 5px 0;
+}
+
+.niebieskiBlok {
+    margin-left: 15vw;
+    margin-right: 15vw;
+    background-color: #b3c0ed;
+    border-radius: 30px;
+}
+.niebieskiBlok h2 {
+    font-size: 1.6em;
+    padding-top: 40px;
+    padding-bottom: 20px;
+    font-family: "Arial Black";
+    text-align: center;
+}
+
+.listaPiosenek {
+    counter-reset: ranking;
+    font-family: Arial;
+}
+.listaPiosenek li {
+    display: flex;
+    align-items: center;
+    gap: 2vw;
+    padding: 10px 20px;
+    border-bottom: 1px solid #303959;
+    font-size: 1.3em;
+    margin-right: 5vw;
+    word-wrap: break-word;
+}
+.listaPiosenek li::before {
+    counter-increment: ranking;
+    content: counter(ranking);
+    font-size: 2em;
+    font-weight: bold;
+    padding-left: 20px;
+    width: 3vw;
+}
+.listaPiosenek li img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+
+.listaInfo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10vw;
+}
+.listaInfo a {
+    width: 15vw;
+}
+
+#szukaj {
+    margin: 30px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#szukaj input {
+    padding: 10px;
+    font-size: 1.5em;
+    border: 1px solid black;
+    border-radius: 20px;
+    outline: none;
+}
+
+#szukaj img {
+    width: 50px;
 }

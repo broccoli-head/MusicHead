@@ -5,16 +5,35 @@
 {% block tresc %}
 <main>
     <h1>MusicHead - opinie o piosenkach</h1>
-    <div>
-        <ul>
+    <div class="blok">
+        <p>Witaj na stronie, na której możesz oceniać piosenki oraz dodawać do nich recenzje.</p>
+        <p>Jeżeli interesuje cię konkretny tytuł, użyj wyszukiwarki, która znajduje się poniżej.</p>
+        <p>Jeśli brakuje jakieś piosenki - wystarczy zalogować się i dodać piosenkę!</p>
+        <div id="szukaj">
+            <input type="text" placeholder="Wyszukaj piosenkę...">
+            <img src="{% static 'icons/search.svg' %}">
+        </div>
+    </div>
+    
+    <div class="niebieskiBlok">
+        <h2>OSTATNIO DODANE PRZEZ UŻYTKOWNIKÓW:</h2>
+        <ol class="listaPiosenek">
             {% for piosenka in piosenki %}
                 <li>
-                    <a href="/piosenka/{{ piosenka.id }}">{{ piosenka.tytul }} - {{ piosenka.wykonawcy}}</a>
+                    {% if piosenka.okladka %}
+                        <img src="{{ piosenka.okladka.url }}" width="100">
+                    {% else %}
+                        <img class="bezOkladki" src="{% static 'icons/album.svg' %}">
+                    {% endif %}
+                    <div class="listaInfo">
+                        <a href="/piosenka/{{ piosenka.id }}">{{ piosenka.tytul }}</a>
+                        <p>{{ piosenka.wykonawcy }}</p>
+                    </div>
                 </li> 
                 {% empty %}
                 <p>Bądź pierwszy - <a href="/dodaj">DODAJ PIOSENKĘ</a></p>
             {% endfor %}
-        </ul>
+        </ol>
     </div>
 </main>
 {% endblock %}

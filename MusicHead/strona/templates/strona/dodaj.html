@@ -3,7 +3,7 @@
 {% block tytul %}Dodaj piosenkę - MusicHead{% endblock %}
 
 {% block tresc %}
-<main>
+<main class="margines">
     <h1>DODAJ PIOSENKĘ</h1>
     {% if wiadomosc %}
     <div class="blad">
@@ -45,6 +45,7 @@
                         <input type="file" name="okladka" id="polePlik" accept=".png, .jpg, .jpeg">
                     </label>
                 </div>
+                <p>Wymagane wymiary: 300x300px</p>
                 <img id="podgladZdjecia" src="">
             </div>
         </div>

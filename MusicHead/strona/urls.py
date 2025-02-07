@@ -1,4 +1,6 @@
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 app_name = "strona"
@@ -10,4 +12,4 @@ urlpatterns = [
     path('login/', views.zaloguj, name='login'),
     path('wyloguj/', views.wyloguj, name='wyloguj'),
     path('piosenka/<int:piosenkaID>', views.informacje, name='informacje')
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,11 +1,17 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect
+
 from .models import Piosenka
 
 def glowna(request):
+
     piosenki = Piosenka.objects.order_by('-id')[:10]
-    return render(request, "strona/glowna.html", {'piosenki': piosenki})
+
+    context = {
+        'piosenki': piosenki
+    }
+    return render(request, "strona/glowna.html", context)
 
 
 def rejestracja(request):
@@ -50,6 +56,8 @@ def dodaj_piosenke(request):
     if request.method == 'POST':
         tytul = request.POST.get("tytul")
         wykonawcy = request.POST.get("wykonawcy")
+        album = request.POST.get("album")
+        gatunek = request.POST.get("gatunek")
 
         if not tytul or not wykonawcy:
             wiadomosc = "Pola tytuł oraz wykonawcy są obowiązkowe!"
@@ -59,13 +67,18 @@ def dodaj_piosenke(request):
             wiadomosc = f'Piosenka o tytule "{tytul}" artysty {wykonawcy} istnieje już w bazie danych!'
             return render(request, "strona/dodaj.html", {"wiadomosc": wiadomosc});  
     
+        if len(tytul) > 255 or len(wykonawcy) > 255 or len(album) > 255 or len(gatunek) > 100:
+            wiadomosc = f'Wartości nie mogą być dłuższe niż 255 znaków!'
+            return render(request, "strona/dodaj.html", {"wiadomosc": wiadomosc}); 
+
+
         data = request.POST.get("data") if request.POST.get("data") else None   #bez tej linii wyrzuca błąd invalid format data jezeli pole jest puste
 
         piosenka = Piosenka(
             tytul = tytul,
             wykonawcy = wykonawcy,
-            album = request.POST.get("album"),
-            gatunek = request.POST.get("gatunek"),
+            album = album,
+            gatunek = gatunek,
             data = data,
             link = request.POST.get("link"),
             okladka = request.FILES.get("okladka")
