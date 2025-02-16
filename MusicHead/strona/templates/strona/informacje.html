@@ -3,10 +3,57 @@
 {% block tytul %}{{ piosenka.tytul }} - {{ piosenka.wykonawcy}} {% endblock %}
 
 {% block tresc %}
-<main>
-    <h2>MusicHead - opinie o piosenkach</h2>
-    <div>
-        <p>{{ piosenka.tytul }} - {{ piosenka.wykonawcy}}</p>
+<main class="margines">
+    <div id="piosenkaInfo">
+        <div class="okladka">
+            {% if piosenka.okladka %}
+                <img src="{{ piosenka.okladka.url }}" width="300">
+            {% else %}
+                <img class="bezOkladki" src="{% static 'icons/album.svg' %}">
+            {% endif %}
+        </div>
+
+        <div class="blokInformacje">
+            <h1 class="tytul">{{ piosenka.tytul }}</h1>
+            <h1 class="artysci">{{ piosenka.wykonawcy}}</h1>
+            <p>Album:
+                {% if piosenka.album %} {{ piosenka.album}}
+                {% else %} Brak {% endif %}
+            </p>
+            <p>Gatunek:
+                {% if piosenka.gatunek %} {{ piosenka.gatunek}}
+                {% else %} Brak {% endif %}
+            </p>
+            <p>Data wydania:
+                {% if piosenka.data %} {{ piosenka.data}}
+                {% else %} Brak {% endif %}
+            </p>
+            {% if piosenka.link %}
+                <p>Link: <a href="{{ piosenka.link }}" target="_blank">{{ piosenka.link }}</a></p>
+            {% endif %}
+        </div>
     </div>
+
+    <h1 class="ocenaInfo">Oceń tą piosenkę:</h1>
+    <form id="dodajOpinie" method="POST">
+        <input type="hidden" name="ocena" id="ocena" value="0">
+        <div>
+            {% for i in iloscGwiazdek %}
+                <img class="gwiazdka" src="{% static 'icons/star_outline.svg' %}" ilosc="{{ i }}" width="50px">
+            {% endfor %}
+            <p id="error">Zaznacz wybraną ilość gwiazdek!</p>
+        </div>
+        <input class="komentarz" type="text" placeholder="Tu wpisz treść komentarza... (opcjonalne)">
+        <button type="submit">Opublikuj</button>
+    </form>
+
 </main>
+
+<script>
+    const pustaGwiazdka = "{% static 'icons/star_outline.svg' %}";
+    const pelnaGwiazdka = "{% static 'icons/star_filled.svg' %}";
+</script>
+
+<script src="{% static 'scripts/opinia.js' %}"></script>
+
 {% endblock %}

@@ -5,15 +5,13 @@ function sprawdzLink(url) {
 
 
 const form = document.getElementById('formularz');
-const urlInput = document.getElementById('urlInput');
-const wiadomosc = document.getElementById('urlError');
 
 form.addEventListener('submit', function(event) {
-    const link = urlInput.value;
+    const link = document.getElementById('urlInput').value;
 
     if (!sprawdzLink(link) && link != "") {
         event.preventDefault();
-        wiadomosc.style.display = 'block';
+        document.getElementById('error').style.display = 'block';
     }
 });
 

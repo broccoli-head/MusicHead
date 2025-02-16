@@ -107,7 +107,7 @@ form input {
     align-items: center;
 }
 
-#zatwierdz, #przeslijZdjecie, .login button {
+#zatwierdz, #przeslijZdjecie, .login button, #dodajOpinie button {
     background-color: #344585;
     color: white;
     font-weight: bold;
@@ -175,7 +175,7 @@ form input {
     padding: 0;
 }
 
-#urlError {
+#error {
     color: red;
     font-weight: bold;
     font-size: 1.2em;
@@ -323,4 +323,49 @@ form .errorlist {
 
 #szukaj img {
     width: 50px;
+}
+
+.blokInformacje h1 {
+    text-align: left;
+    margin: 0;
+}
+.blokInformacje .tytul {
+    margin-bottom: 5px;
+    font-size: 2.5em;
+}
+.blokInformacje .artysci {
+    font-size: 1.5em;
+    margin-bottom: 50px;
+}
+.blokInformacje p {
+    font-size: 1.2em;
+    margin: 0;
+    margin-top: 5px;
+}
+
+#piosenkaInfo {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+.okladka .bezOkladki {
+    width: 300px;
+}
+
+.komentarz {
+    margin-top: 10px;
+    width: 500px;
+    min-height: 40px;
+    font-size: 1.3em;
+}
+#dodajOpinie button {
+    font-size: 1.2em;
+    padding: 15px;
+    margin-left: 10px;
+}
+
+.ocenaInfo {
+    margin-top: 60px;
+    margin-bottom: 40px;
+    text-align: left;
 }

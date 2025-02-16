@@ -90,4 +90,8 @@ def dodaj_piosenke(request):
 
 def informacje(request, piosenkaID):
     piosenka = Piosenka.objects.get(id = piosenkaID)
-    return render(request, 'strona/informacje.html', {"piosenka": piosenka})
+    context = {
+        "piosenka": piosenka,
+        "iloscGwiazdek": range(1, 6)
+    }
+    return render(request, 'strona/informacje.html', context)
