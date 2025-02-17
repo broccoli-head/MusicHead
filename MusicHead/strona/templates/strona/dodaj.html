@@ -3,6 +3,17 @@
 {% block tytul %}Dodaj piosenkę - MusicHead{% endblock %}
 
 {% block tresc %}
+
+{% if not zalogowany %}
+<main>
+    <div class="blad">
+        <img src="{% static 'icons/warning.svg' %}">
+        <p>Aby dodać piosenkę, musisz się <a href="/login">zalogować</a></p>
+    </div>  
+</main>
+
+{% else %}
+
 <main class="margines">
     <h1>DODAJ PIOSENKĘ</h1>
     {% if wiadomosc %}
@@ -57,4 +68,6 @@
     </form>
 </main>
 <script src="{% static 'scripts/dodajPiosenke.js' %}"></script>
+
+{% endif %}
 {% endblock %}

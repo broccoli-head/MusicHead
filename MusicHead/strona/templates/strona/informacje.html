@@ -35,18 +35,36 @@
     </div>
 
     <h1 class="ocenaInfo">Oceń tą piosenkę:</h1>
-    <form id="dodajOpinie" method="POST">
-        <input type="hidden" name="ocena" id="ocena" value="0">
-        <div>
-            {% for i in iloscGwiazdek %}
-                <img class="gwiazdka" src="{% static 'icons/star_outline.svg' %}" ilosc="{{ i }}" width="50px">
-            {% endfor %}
-            <p id="error">Zaznacz wybraną ilość gwiazdek!</p>
-        </div>
-        <input class="komentarz" type="text" placeholder="Tu wpisz treść komentarza... (opcjonalne)">
-        <button type="submit">Opublikuj</button>
-    </form>
 
+    {% if zalogowany %}
+
+        {% if wiadomosc %}
+        <div class="blad">
+            <img src="{% static 'icons/warning.svg' %}">
+            <p>{{ wiadomosc }}</p>
+        </div>
+        {% endif %}
+        
+        <form id="dodajOpinie" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="ocena" id="ocena" value="0">
+            <div>
+                {% for i in iloscGwiazdek %}
+                    <img class="gwiazdka" src="{% static 'icons/star_outline.svg' %}" ilosc="{{ i }}" width="50px">
+                {% endfor %}
+                <p id="error">Zaznacz wybraną ilość gwiazdek!</p>
+            </div>
+            <input class="komentarz" type="text" name="komentarz" placeholder="Tu wpisz treść komentarza... (opcjonalne)" maxlength="500">
+            <button type="submit">Opublikuj</button>
+        </form>
+
+    {% else %}
+        <div class="blad">
+            <img src="{% static 'icons/warning.svg' %}">
+            <p>Aby dodać opinię, musisz się <a href="/login">zalogować</a></p>
+        </div>
+
+    {% endif %}
 </main>
 
 <script>

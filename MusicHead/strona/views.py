@@ -1,8 +1,10 @@
 from django.contrib.auth import login, logout
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect
 
-from .models import Piosenka
+from .models import Piosenka, Statystyki, Opinia
+
 
 def glowna(request):
 
@@ -50,8 +52,7 @@ def wyloguj(request):
 
 
 def dodaj_piosenke(request):
-    if not request.user.is_authenticated:
-        return render(request, "strona/niezalogowany.html")
+    zalogowany = True if request.user.is_authenticated else False
     
     if request.method == 'POST':
         tytul = request.POST.get("tytul")
@@ -85,13 +86,42 @@ def dodaj_piosenke(request):
         )
         piosenka.save()
         
-    return render(request, "strona/dodaj.html")
+    return render(request, "strona/dodaj.html", {'zalogowany': zalogowany})
 
 
 def informacje(request, piosenkaID):
     piosenka = Piosenka.objects.get(id = piosenkaID)
+    wiadomosc = ""
+    zalogowany = True if request.user.is_authenticated else False
+
+    if request.method == 'POST':
+        ocena = request.POST.get("ocena")
+        komentarz = request.POST.get("komentarz")
+        
+        try:
+            numer = float(ocena)
+            
+            if numer != int(numer) or not (1 <= int(numer) <= 5):
+                wiadomosc = "Ocena musi być liczbą całkowitą od 1 do 5!"
+            elif len(komentarz) > 500:
+                wiadomosc = "Komentarz nie może mieć więcej niż 500 znaków!"
+            elif Opinia.objects.filter(uzytkownik = request.user, idPiosenki = piosenka.id).exists():
+                wiadomosc = "Już oceniłeś tą piosenkę!"
+
+            else:
+                opinia = Opinia.objects.create(
+                    idPiosenki = piosenka.id, uzytkownik = request.user,
+                    ocena = numer, komentarz = komentarz
+                )
+
+        except ValueError:
+            wiadomosc = "Ocena musi być liczbą!"
+
+
     context = {
         "piosenka": piosenka,
-        "iloscGwiazdek": range(1, 6)
+        "iloscGwiazdek": range(1, 6),
+        "wiadomosc": wiadomosc,
+        "zalogowany": zalogowany
     }
     return render(request, 'strona/informacje.html', context)
