@@ -36,7 +36,7 @@
 
     <h1 class="ocenaInfo">Oceń tą piosenkę:</h1>
 
-    {% if zalogowany %}
+    {% if user.is_authenticated %}
 
         {% if wiadomosc %}
         <div class="blad">

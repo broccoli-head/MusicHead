@@ -1,13 +1,12 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .models import Piosenka, Statystyki, Opinia
 
 
 def glowna(request):
-
     piosenki = Piosenka.objects.order_by('-id')[:10]
 
     context = {
@@ -16,11 +15,14 @@ def glowna(request):
     return render(request, "strona/glowna.html", context)
 
 
+
 def rejestracja(request):
+
     if request.method == 'POST':
         formularz = UserCreationForm(request.POST)
         if formularz.is_valid():
             uzytkownik = formularz.save()
+            Statystyki.objects.create(uzytkownik = uzytkownik)
             login(request, uzytkownik)
             return redirect('/')
     else:
@@ -29,7 +31,9 @@ def rejestracja(request):
     return render(request, 'strona/rejestracja.html', {'form': formularz})
 
 
+
 def zaloguj(request):
+
     if request.method == 'POST':
         formularz = AuthenticationForm(data = request.POST)
         if formularz.is_valid():
@@ -52,8 +56,7 @@ def wyloguj(request):
 
 
 def dodaj_piosenke(request):
-    zalogowany = True if request.user.is_authenticated else False
-    
+ 
     if request.method == 'POST':
         tytul = request.POST.get("tytul")
         wykonawcy = request.POST.get("wykonawcy")
@@ -85,14 +88,17 @@ def dodaj_piosenke(request):
             okladka = request.FILES.get("okladka")
         )
         piosenka.save()
+
+        dane = Statystyki.objects.get(uzytkownik = request.user)
+        dane.iloscPiosenek += 1
+        dane.save()
         
-    return render(request, "strona/dodaj.html", {'zalogowany': zalogowany})
+    return render(request, "strona/dodaj.html")
 
 
 def informacje(request, piosenkaID):
-    piosenka = Piosenka.objects.get(id = piosenkaID)
+    piosenka = get_object_or_404(Piosenka, id = piosenkaID)
     wiadomosc = ""
-    zalogowany = True if request.user.is_authenticated else False
 
     if request.method == 'POST':
         ocena = request.POST.get("ocena")
@@ -113,6 +119,14 @@ def informacje(request, piosenkaID):
                     idPiosenki = piosenka.id, uzytkownik = request.user,
                     ocena = numer, komentarz = komentarz
                 )
+    
+                dane = Statystyki.objects.get(uzytkownik = request.user)
+                dane.iloscOcen += 1
+                
+                if komentarz:
+                    dane.iloscKomentarzy += 1
+                
+                dane.save()
 
         except ValueError:
             wiadomosc = "Ocena musi być liczbą!"
@@ -121,7 +135,19 @@ def informacje(request, piosenkaID):
     context = {
         "piosenka": piosenka,
         "iloscGwiazdek": range(1, 6),
-        "wiadomosc": wiadomosc,
-        "zalogowany": zalogowany
+        "wiadomosc": wiadomosc
     }
     return render(request, 'strona/informacje.html', context)
+
+
+
+def profil(request, nazwaUzytkownika):
+    uzytkownik = get_object_or_404(User, username = nazwaUzytkownika)
+    dane = Statystyki.objects.get(uzytkownik = uzytkownik)
+    
+    context = {
+        "uzytkownik": uzytkownik,
+        "dane": dane
+    }
+
+    return render(request, "strona/profil.html", context)

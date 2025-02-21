@@ -40,6 +40,10 @@ nav {
     background: #495fad;
 }
 
+#wyloguj {
+    color: rgb(255, 62, 62);
+}
+
 main {
     margin: 120px 0;
     margin-bottom: 0;
@@ -76,6 +80,10 @@ form input {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.login {
+    margin-bottom: 40px;
 }
 
 .pole, .login input {
@@ -281,13 +289,18 @@ form .errorlist {
     margin-right: 5vw;
     word-wrap: break-word;
 }
+.listaPiosenek li:last-of-type {
+    border-bottom: none;
+}
+
 .listaPiosenek li::before {
     counter-increment: ranking;
     content: counter(ranking);
     font-size: 2em;
     font-weight: bold;
-    padding-left: 20px;
-    width: 3vw;
+    padding-right: 20px;
+    width: 50px;
+    text-align: center;
 }
 .listaPiosenek li img {
     width: 100px;
@@ -368,4 +381,26 @@ form .errorlist {
     margin-top: 60px;
     margin-bottom: 40px;
     text-align: left;
+}
+
+.ostrzezenie {
+    display: flex;
+    gap: 10px;
+    font-size: 1.3em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 50px;
+    border: solid 3px rgb(152, 101, 14);
+    border-radius: 20px;
+    background-color: rgb(255, 230, 120);
+    color: rgb(152, 101, 14);
+    padding: 10px 15px;
+    width: 500px;
+}
+.ostrzezenie img {
+    width: 50px;
+}
+
+.pogrubienie {
+    font-family: "Arial Black";
 }

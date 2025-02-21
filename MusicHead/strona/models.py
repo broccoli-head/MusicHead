@@ -36,7 +36,7 @@ class Statystyki(models.Model):
 
 class Opinia(models.Model):
     idPiosenki = models.CharField(max_length = 50)
-    uzytkownik = models.OneToOneField(User, on_delete = models.CASCADE)
+    uzytkownik = models.ForeignKey(User, on_delete = models.CASCADE)
     ocena = models.PositiveIntegerField()
     komentarz = models.TextField(blank = True)
     data = models.DateTimeField(auto_now_add = True)

@@ -15,7 +15,12 @@
         <ul class="menu">
             <li><a href="/.."><img src="{% static 'icons/home.svg' %}">Strona Główna</a></li>
             <li><a href="/dodaj"><img src="{% static 'icons/add.svg' %}">Dodaj Piosenkę</a></li>
+            {% if not user.is_authenticated %}
             <li><a href="/login"><img src="{% static 'icons/account.svg' %}">Zaloguj się</a></li>
+            {% else %}
+            <li><a href="/uzytkownik/{{ user.username }}"><img src="{% static 'icons/face.svg' %}">Twój profil</a></li>
+            <li><a href="/wyloguj" id="wyloguj"><img src="{% static 'icons/logout.svg' %}">Wyloguj się</a></li>
+            {% endif %}
         </ul>
     </nav>
     {% block tresc %}

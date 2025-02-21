@@ -4,7 +4,7 @@
 
 {% block tresc %}
 
-{% if not zalogowany %}
+{% if not user.is_authenticated %}
 <main>
     <div class="blad">
         <img src="{% static 'icons/warning.svg' %}">

@@ -1,0 +1,16 @@
+{% extends "strona/base.html" %}
+{% load static %}
+{% block tytul %}Profil - MusicHead{% endblock %}
+
+{% block tresc %}
+
+<main class="margines">
+    <p>Profil użytkownika {{ uzytkownik.username }}</p>
+    <ul>
+        <li>Ilość dodanych piosenek: {{ dane.iloscPiosenek }}</li>
+        <li>Ilość komentarzy: {{ dane.iloscKomentarzy }}</li>
+        <li>Ilość ocen: {{ dane.iloscOcen }}</li>
+    </ul>
+</main>
+
+{% endblock %}
