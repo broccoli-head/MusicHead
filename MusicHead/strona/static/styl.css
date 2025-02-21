@@ -13,6 +13,10 @@ nav {
     box-shadow: 0 0 5px black;
 }
 
+img[src$=".svg"] {
+    -webkit-user-drag: none;
+}
+
 .menu {
     display: flex;
     justify-content: center;
@@ -42,6 +46,9 @@ nav {
 
 #wyloguj {
     color: rgb(255, 62, 62);
+}
+#wyloguj:hover {
+    background-color: rgba(255, 62, 62, 0.3);
 }
 
 main {
@@ -115,7 +122,7 @@ form input {
     align-items: center;
 }
 
-#zatwierdz, #przeslijZdjecie, .login button, #dodajOpinie button {
+#zatwierdz, #dodajOpinie button, .przycisk {
     background-color: #344585;
     color: white;
     font-weight: bold;
@@ -125,7 +132,7 @@ form input {
     transition: 0.2s;
 }
 
-#przeslijZdjecie, .login button {
+.przycisk {
     width: max-content;
     height: max-content;
     display: flex;
@@ -133,7 +140,7 @@ form input {
     gap: 10px;
     padding: 10px 15px;
 }
-#przeslijZdjecie:hover, .login button:hover {
+.przycisk:hover {
     background-color: #495fad;
 }
 
@@ -211,7 +218,7 @@ form input {
 .login button {
     font-size: 1.6em;
     padding: 15px 20px;
-    margin-left: auto;
+    margin-left: auto; 
     margin-right: auto;
 }
 
@@ -365,6 +372,10 @@ form .errorlist {
     width: 300px;
 }
 
+.gwiazdka {
+    cursor: pointer;
+}
+
 .komentarz {
     margin-top: 10px;
     width: 500px;
@@ -403,4 +414,41 @@ form .errorlist {
 
 .pogrubienie {
     font-family: "Arial Black";
+}
+
+.statystyki {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+.statystyki h1 {
+    margin-bottom: 60px;
+}
+.statystyki p {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 1.3em;
+}
+.statystyki img {
+    width: 40px;
+}
+.statystyki hr {
+    margin: 30px 0;
+}
+
+.opinia {
+    padding-left: 20px;
+    margin: 20px 0;
+}
+.opinia p {
+    font-size: 1.2em;
+}
+
+#brakOpinii {
+    font-size: 1.3em;
+}
+#menuEdycji {
+    display: flex;
+    gap: 10px;
 }

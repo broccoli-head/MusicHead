@@ -99,6 +99,7 @@ def dodaj_piosenke(request):
 def informacje(request, piosenkaID):
     piosenka = get_object_or_404(Piosenka, id = piosenkaID)
     wiadomosc = ""
+    listaOpinii = Opinia.objects.filter(idPiosenki = piosenkaID)
 
     if request.method == 'POST':
         ocena = request.POST.get("ocena")
@@ -134,6 +135,7 @@ def informacje(request, piosenkaID):
 
     context = {
         "piosenka": piosenka,
+        "opinie": listaOpinii,
         "iloscGwiazdek": range(1, 6),
         "wiadomosc": wiadomosc
     }

@@ -65,6 +65,37 @@
         </div>
 
     {% endif %}
+
+    <h1 class="ocenaInfo">Opinie użytkowników:</h1>
+
+    {% for opinia in opinie %}
+    <div class="opinia">
+        <p>{{ opinia.uzytkownik }}, {{ opinia.data }}</p>
+
+        {% for i in iloscGwiazdek %}
+            {% if i <= opinia.ocena %}
+                <img src="{% static 'icons/star_filled.svg' %}">
+            {% else %}
+                <img src="{% static 'icons/star_outline.svg' %}">
+            {% endif %}
+        {% endfor %}
+
+        {% if opinia.uzytkownik.username == user.username %}
+        <div id="menuEdycji">
+            <button class="przycisk">Edytuj</button>
+            <button class="przycisk">Usuń</button>
+        </div>
+        {% endif %}
+
+        {% if opinia.komentarz %}
+            <p>{{ opinia.komentarz }}</p>
+        {% endif %}
+    </div>
+    <hr>
+    {% empty %}
+        <p id="brakOpinii">Ta piosenka nie ma jeszcze żadnych opinii. Bądź pierwszy!</p>
+    {% endfor %}
+
 </main>
 
 <script>

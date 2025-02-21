@@ -1,15 +1,26 @@
 {% extends "strona/base.html" %}
-
+{% load static %}
 {% block tytul %}Zarejestruj się - MusicHead{% endblock %}
 
 {% block tresc %}
 <main>
+    {% if user.is_authenticated %}
+    <div class="ostrzezenie">
+        <img src="{% static 'icons/notification.svg' %}">
+        <p>
+            Jesteś zalogowany jako <span class="pogrubienie">{{ user.username }}</span>.<br>
+            Czy aby na pewno chcesz kontynuować?<br>
+            Spowoduje to wylogowanie z obecnego konta.
+        </p>
+    </div>
+    {% endif %}
+
     <h1>Rejestracja</h1>
     <form class="login" method="post">
         {% csrf_token %}
         <p id="loginOpcja">Jeśli posiadasz już konto, <a href="/login">zaloguj się</a>.</p>
         {{ form.as_p }}
-        <button type="submit">Zarejestruj się</button>
+        <button type="submit" class="przycisk">Zarejestruj się</button>
     </form>
 </main>
 {% endblock %}
