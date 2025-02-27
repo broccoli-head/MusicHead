@@ -448,7 +448,11 @@ form .errorlist {
 #brakOpinii {
     font-size: 1.3em;
 }
-#menuEdycji {
+
+#opiniaDetale {
     display: flex;
-    gap: 10px;
+    flex-direction: row;
+}
+#opiniaDetale button {
+    margin-left: 20px;
 }

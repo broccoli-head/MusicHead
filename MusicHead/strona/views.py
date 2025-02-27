@@ -99,7 +99,18 @@ def dodaj_piosenke(request):
 def informacje(request, piosenkaID):
     piosenka = get_object_or_404(Piosenka, id = piosenkaID)
     wiadomosc = ""
-    listaOpinii = Opinia.objects.filter(idPiosenki = piosenkaID)
+    if request.user.is_authenticated:
+        opiniaUzytkownika = Opinia.objects.filter(uzytkownik = request.user, idPiosenki = piosenka.id).first()
+        listaOpinii = Opinia.objects.filter(idPiosenki = piosenkaID).exclude(uzytkownik = request.user)
+    else:
+        opiniaUzytkownika = ""
+        listaOpinii = Opinia.objects.filter(idPiosenki = piosenkaID)
+    
+
+    if not listaOpinii and opiniaUzytkownika:
+        opinieWiadomosc = "Jesteś jedyną osobą, która oceniła tą piosenkę."
+    else:
+        opinieWiadomosc = "Ta piosenka nie ma jeszcze żadnych opinii. Bądź pierwszy!"
 
     if request.method == 'POST':
         ocena = request.POST.get("ocena")
@@ -112,8 +123,6 @@ def informacje(request, piosenkaID):
                 wiadomosc = "Ocena musi być liczbą całkowitą od 1 do 5!"
             elif len(komentarz) > 500:
                 wiadomosc = "Komentarz nie może mieć więcej niż 500 znaków!"
-            elif Opinia.objects.filter(uzytkownik = request.user, idPiosenki = piosenka.id).exists():
-                wiadomosc = "Już oceniłeś tą piosenkę!"
 
             else:
                 opinia = Opinia.objects.create(
@@ -137,7 +146,9 @@ def informacje(request, piosenkaID):
         "piosenka": piosenka,
         "opinie": listaOpinii,
         "iloscGwiazdek": range(1, 6),
-        "wiadomosc": wiadomosc
+        "wiadomosc": wiadomosc,
+        "opiniaUzytkownika": opiniaUzytkownika,
+        "opinieWiadomosc": opinieWiadomosc
     }
     return render(request, 'strona/informacje.html', context)
 

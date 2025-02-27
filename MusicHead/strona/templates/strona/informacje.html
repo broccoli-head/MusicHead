@@ -44,7 +44,31 @@
             <p>{{ wiadomosc }}</p>
         </div>
         {% endif %}
+
+        {% if opiniaUzytkownika %}
+            <div class="opinia">
+                <p>{{ user.username }}, {{ opiniaUzytkownika.data }}</p>
+                
+                <div id="opiniaDetale">
+                    {% for i in iloscGwiazdek %}
+                        {% if i <= opiniaUzytkownika.ocena %}
+                            <img src="{% static 'icons/star_filled.svg' %}">
+                        {% else %}
+                            <img src="{% static 'icons/star_outline.svg' %}">
+                        {% endif %}
+                    {% endfor %}
+
+                    <button id="usunOpinie" class="przycisk">Usuń</button>
+                </div>
         
+                {% if opiniaUzytkownika.komentarz %}
+                    <p>{{ opiniaUzytkownika.komentarz }}</p>
+                {% endif %}
+            </div>
+            <hr>
+        
+        {% else %}
+  
         <form id="dodajOpinie" method="POST">
             {% csrf_token %}
             <input type="hidden" name="ocena" id="ocena" value="0">
@@ -57,6 +81,7 @@
             <input class="komentarz" type="text" name="komentarz" placeholder="Tu wpisz treść komentarza... (opcjonalne)" maxlength="500">
             <button type="submit">Opublikuj</button>
         </form>
+        {% endif %}
 
     {% else %}
         <div class="blad">
@@ -66,34 +91,29 @@
 
     {% endif %}
 
-    <h1 class="ocenaInfo">Opinie użytkowników:</h1>
+    <h1 class="ocenaInfo">Opinie innych użytkowników:</h1>
 
     {% for opinia in opinie %}
-    <div class="opinia">
-        <p>{{ opinia.uzytkownik }}, {{ opinia.data }}</p>
+    {% if opinia.uzytkownik.username != user.username %}
+        <div class="opinia">
+            <p>{{ opinia.uzytkownik }}, {{ opinia.data }}</p>
 
-        {% for i in iloscGwiazdek %}
-            {% if i <= opinia.ocena %}
-                <img src="{% static 'icons/star_filled.svg' %}">
-            {% else %}
-                <img src="{% static 'icons/star_outline.svg' %}">
+            {% for i in iloscGwiazdek %}
+                {% if i <= opinia.ocena %}
+                    <img src="{% static 'icons/star_filled.svg' %}">
+                {% else %}
+                    <img src="{% static 'icons/star_outline.svg' %}">
+                {% endif %}
+            {% endfor %}
+
+            {% if opinia.komentarz %}
+                <p>{{ opinia.komentarz }}</p>
             {% endif %}
-        {% endfor %}
-
-        {% if opinia.uzytkownik.username == user.username %}
-        <div id="menuEdycji">
-            <button class="przycisk">Edytuj</button>
-            <button class="przycisk">Usuń</button>
         </div>
-        {% endif %}
-
-        {% if opinia.komentarz %}
-            <p>{{ opinia.komentarz }}</p>
-        {% endif %}
-    </div>
-    <hr>
+        <hr>
+    {% endif %}
     {% empty %}
-        <p id="brakOpinii">Ta piosenka nie ma jeszcze żadnych opinii. Bądź pierwszy!</p>
+        <p id="brakOpinii">{{ opinieWiadomosc }}</p>
     {% endfor %}
 
 </main>

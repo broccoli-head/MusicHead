@@ -22,3 +22,10 @@ form.addEventListener('submit', function(event) {
         document.getElementById("error").style.display = 'block';
     }
 });
+
+
+const usunOpinie = document.getElementById('usunOpinie')
+
+usunOpinie.addEventListener('click', function () {
+    
+});
