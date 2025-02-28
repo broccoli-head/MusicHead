@@ -2,6 +2,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Avg
 
 from .models import Piosenka, Statystyki, Opinia
 
@@ -99,52 +100,75 @@ def dodaj_piosenke(request):
 def informacje(request, piosenkaID):
     piosenka = get_object_or_404(Piosenka, id = piosenkaID)
     wiadomosc = ""
+    listaOpinii = Opinia.objects.filter(idPiosenki = piosenkaID)
+    iloscOpinii = listaOpinii.count()
+
+    srednia = listaOpinii.aggregate(Avg('ocena'))['ocena__avg']
+    if srednia is None:
+        srednia = 0
+
+
     if request.user.is_authenticated:
         opiniaUzytkownika = Opinia.objects.filter(uzytkownik = request.user, idPiosenki = piosenka.id).first()
-        listaOpinii = Opinia.objects.filter(idPiosenki = piosenkaID).exclude(uzytkownik = request.user)
+        opinieInnych = listaOpinii.exclude(uzytkownik = request.user)
     else:
         opiniaUzytkownika = ""
-        listaOpinii = Opinia.objects.filter(idPiosenki = piosenkaID)
+        opinieInnych = Opinia.objects.filter(idPiosenki = piosenkaID)
     
 
-    if not listaOpinii and opiniaUzytkownika:
+    if not opinieInnych and opiniaUzytkownika:
         opinieWiadomosc = "Jesteś jedyną osobą, która oceniła tą piosenkę."
     else:
         opinieWiadomosc = "Ta piosenka nie ma jeszcze żadnych opinii. Bądź pierwszy!"
 
+
     if request.method == 'POST':
-        ocena = request.POST.get("ocena")
-        komentarz = request.POST.get("komentarz")
-        
-        try:
-            numer = float(ocena)
-            
-            if numer != int(numer) or not (1 <= int(numer) <= 5):
-                wiadomosc = "Ocena musi być liczbą całkowitą od 1 do 5!"
-            elif len(komentarz) > 500:
-                wiadomosc = "Komentarz nie może mieć więcej niż 500 znaków!"
-
+        if opiniaUzytkownika:
+            if request.POST.get("usunOpinie") == "1":
+                opiniaUzytkownika.delete()
+                return redirect('strona:informacje', piosenkaID = piosenka.id)
             else:
-                opinia = Opinia.objects.create(
-                    idPiosenki = piosenka.id, uzytkownik = request.user,
-                    ocena = numer, komentarz = komentarz
-                )
-    
-                dane = Statystyki.objects.get(uzytkownik = request.user)
-                dane.iloscOcen += 1
-                
-                if komentarz:
-                    dane.iloscKomentarzy += 1
-                
-                dane.save()
+                wiadomosc = "Już dodałeś opinię do tej piosenki!"
+            
+        else:
+            ocena = request.POST.get("ocena")
+            komentarz = request.POST.get("komentarz")
+            
+            if ocena:
+                try:
+                    numer = float(ocena)
+                    
+                    if numer != int(numer) or not (1 <= int(numer) <= 5):
+                        wiadomosc = "Ocena musi być liczbą całkowitą od 1 do 5!"
+                    elif len(komentarz) > 500:
+                        wiadomosc = "Komentarz nie może mieć więcej niż 500 znaków!"
 
-        except ValueError:
-            wiadomosc = "Ocena musi być liczbą!"
+                    else:
+                        opinia = Opinia.objects.create(
+                            idPiosenki = piosenka.id, uzytkownik = request.user,
+                            ocena = numer, komentarz = komentarz
+                        )
+            
+                        dane = Statystyki.objects.get(uzytkownik = request.user)
+                        dane.iloscOcen += 1
+                        
+                        if komentarz:
+                            dane.iloscKomentarzy += 1
+                        
+                        dane.save()
+                        return redirect('strona:informacje', piosenkaID = piosenka.id)
+
+                except ValueError:
+                    wiadomosc = "Ocena musi być liczbą!"
+            else:
+                wiadomosc = "Musisz podać ocenę!"
 
 
     context = {
         "piosenka": piosenka,
-        "opinie": listaOpinii,
+        "srednia": srednia,
+        "iloscOpinii": iloscOpinii,
+        "opinie": opinieInnych,
         "iloscGwiazdek": range(1, 6),
         "wiadomosc": wiadomosc,
         "opiniaUzytkownika": opiniaUzytkownika,

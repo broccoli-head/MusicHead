@@ -31,6 +31,18 @@
             {% if piosenka.link %}
                 <p>Link: <a href="{{ piosenka.link }}" target="_blank">{{ piosenka.link }}</a></p>
             {% endif %}
+
+            <p id="sredniaOcen">Średnia ocen:</p>
+            <div id="sredniaGwiazdki">
+                {% for i in iloscGwiazdek %}
+                    {% if i <= srednia %}
+                        <img src="{% static 'icons/star_filled.svg' %}">
+                    {% else %}
+                        <img src="{% static 'icons/star_outline.svg' %}">
+                    {% endif %}
+                {% endfor %}
+                <p>{{ srednia }} / 5 (Ilość opinii: {{ iloscOpinii }})</p>
+            </div>
         </div>
     </div>
 
@@ -58,7 +70,11 @@
                         {% endif %}
                     {% endfor %}
 
-                    <button id="usunOpinie" class="przycisk">Usuń</button>
+                    <form id="formularzUsuwania" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" id="inputUsun" name="usunOpinie" value="0">
+                        <button id="przyciskUsun" class="przycisk">Usuń</button>
+                    </form>
                 </div>
         
                 {% if opiniaUzytkownika.komentarz %}

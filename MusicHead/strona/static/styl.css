@@ -456,3 +456,20 @@ form .errorlist {
 #opiniaDetale button {
     margin-left: 20px;
 }
+
+#sredniaOcen {
+    margin-top: 20px;
+    font-size: 1.5em;
+}
+
+#sredniaGwiazdki {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+#sredniaGwiazdki p {
+    margin-left: 10px;
+}
+#sredniaGwiazdki img {
+    margin-top: 5px;
+}

@@ -2,8 +2,8 @@ const gwiazdki = document.querySelectorAll(".gwiazdka");
 const gwiazdkiInput = document.getElementById("ocena");
 
 gwiazdki.forEach(gwiazdka => {
-    gwiazdka.addEventListener("click", function () {
-        const ilosc = this.getAttribute("ilosc");
+    gwiazdka.addEventListener("click", () => {
+        const ilosc = gwiazdka.getAttribute("ilosc");
         gwiazdkiInput.value = ilosc;
 
         gwiazdki.forEach(element => element.src = pustaGwiazdka);
@@ -14,18 +14,19 @@ gwiazdki.forEach(gwiazdka => {
 });
 
 
-const form = document.getElementById('dodajOpinie');
+const dodajOpinie = document.getElementById('dodajOpinie');
+const usun = document.getElementById('przyciskUsun');
 
-form.addEventListener('submit', function(event) {
+if(dodajOpinie) dodajOpinie.addEventListener('submit', (event) => {
     if (gwiazdkiInput.value == 0) {
         event.preventDefault();
         document.getElementById("error").style.display = 'block';
     }
 });
 
-
-const usunOpinie = document.getElementById('usunOpinie')
-
-usunOpinie.addEventListener('click', function () {
-    
+if (usun) usun.addEventListener('click', () => {
+    if (confirm("Czy na pewno chcesz usunąć swoją opinię?")) {
+        document.getElementById("inputUsun").value = 1;
+        document.getElementById('formularzUsuwania').submit();
+    }
 });
