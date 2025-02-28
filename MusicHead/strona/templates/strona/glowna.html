@@ -4,15 +4,18 @@
 
 {% block tresc %}
 <main>
-    <h1>MusicHead - opinie o piosenkach</h1>
+    <h1 id="glownyTytul">MusicHead - opinie o piosenkach</h1>
     <div class="blok">
         <p>Witaj na stronie, na której możesz oceniać piosenki oraz dodawać do nich recenzje.</p>
         <p>Jeżeli interesuje cię konkretny tytuł, użyj wyszukiwarki, która znajduje się poniżej.</p>
         <p>Jeśli brakuje jakieś piosenki - wystarczy zalogować się i dodać piosenkę!</p>
-        <div id="szukaj">
-            <input type="text" placeholder="Wyszukaj piosenkę...">
-            <img src="{% static 'icons/search.svg' %}">
-        </div>
+
+        <form action="/szukaj/" method="GET" class="szukaj">
+            <input type="text" name="q" placeholder="Wyszukaj piosenkę/artystę..." maxlength="60" required>
+            <button type="submit">
+                <img src="{% static 'icons/search.svg' %}">
+            </button>
+        </form>
     </div>
     
     <div class="niebieskiBlok">
@@ -31,7 +34,10 @@
                     </div>
                 </li> 
             {% empty %}
+            <div id="brakPiosenek">
+                <p>Nie dodano jeszcze żadnych piosenek.</p>
                 <p>Bądź pierwszy - <a href="/dodaj">DODAJ PIOSENKĘ</a></p>
+            </div>
             {% endfor %}
         </ol>
     </div>

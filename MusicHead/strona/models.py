@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from PIL import Image
 
 class Piosenka(models.Model):
+    idPiosenki = models.CharField(max_length=50)
     tytul = models.CharField(max_length=255)
     wykonawcy = models.CharField(max_length=255)
     album = models.CharField(max_length=255, blank=True)

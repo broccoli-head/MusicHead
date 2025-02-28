@@ -1,0 +1,59 @@
+{% extends "strona/base.html" %}
+{% load static %}
+{% block tytul %} `{{ zapytanie }}` - wyniki wyszukiwania | MusicHead {% endblock %}
+
+{% block tresc %}
+<main class="wynikiSzukania">
+    <div class="blok">
+        <form action="/szukaj/" method="GET" class="szukaj">
+            <input type="text" name="q" placeholder="Wyszukaj piosenkę/artystę..." maxlength="60" required>
+            <button type="submit">
+                <img src="{% static 'icons/search.svg' %}">
+            </button>
+        </form>
+        <h1>Wyniki wyszukiwania dla: `{{ zapytanie }}`</h1>
+    </div>
+
+    <div id="podzialWyszukiwan">
+        <div class="listaWynikow">
+            <h2>Z bazy danych:</h2>
+            
+            {% for piosenka in wynikiLokalne %}
+                <div class="wynik">
+                    {% if piosenka.okladka %}
+                        <img src="{{ piosenka.okladka.url }}" width="100">
+                    {% else %}
+                        <img class="bezOkladki" src="{% static 'icons/album.svg' %}">
+                    {% endif %}
+                    <div class="listaInfo">
+                        <a href="/piosenka/{{ piosenka.id }}">{{ piosenka.tytul }}</a>
+                        <p>{{ piosenka.wykonawcy }}</p>
+                    </div>
+                </div>
+            {% empty %}
+                <p id="brakWynikowSzukania" class="blok">Brak pasujących wyników do twojego zapytania.</p>
+            {% endfor %}
+        </div>
+
+        <div class="listaWynikow">
+            <h2>Ze Spotify:</h2>
+            {% for piosenka in wynikiSpotify %}
+                <div class="wynik">
+                    {% if piosenka.okladka %}
+                        <p>{{ piosenka.okladka.url }}</p>
+                        <img src="{{ piosenka.okladka.url }}" width="100">
+                    {% else %}
+                        <img class="bezOkladki" src="{% static 'icons/album.svg' %}">
+                    {% endif %}
+                    <div class="listaInfo">
+                        <a href="/piosenka/{{ piosenka.idPiosenki }}">{{ piosenka.tytul }}</a>
+                        <p>{{ piosenka.wykonawcy }}</p>
+                    </div>
+                </div> 
+            {% empty %}
+                <p id="brakWynikowSzukania" class="blok">Brak pasujących wyników do twojego zapytania.</p>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+{% endblock %}

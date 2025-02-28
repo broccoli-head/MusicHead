@@ -3,6 +3,9 @@ body {
     padding: 0;
     font-family: Calibri, 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
     font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
 nav {
@@ -44,6 +47,18 @@ img[src$=".svg"] {
     background: #495fad;
 }
 
+.tresc {
+    flex: 1;
+}
+footer {
+    margin-top: 80px;
+    color: white;
+    background-color: #344585;
+    text-align: center;
+    font-size: 1.5em;
+    padding: 15px;
+}
+
 #wyloguj {
     color: rgb(255, 62, 62);
 }
@@ -59,6 +74,10 @@ main h1 {
     margin-bottom: 40px;
     text-align: center;
     font-family: "Arial Black";
+}
+
+#glownyTytul {
+    font-size: 2.3em;
 }
 
 .margines {
@@ -259,7 +278,9 @@ form .errorlist {
 }
 
 .blok {
+    text-align: center;
     display: block;
+    font-size: 1.2em;
     width: fit-content;
     margin-left: auto; 
     margin-right: auto;
@@ -327,22 +348,82 @@ form .errorlist {
     width: 15vw;
 }
 
-#szukaj {
-    margin: 30px 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-#szukaj input {
-    padding: 10px;
-    font-size: 1.5em;
-    border: 1px solid black;
-    border-radius: 20px;
-    outline: none;
+#brakPiosenek {
+    padding-bottom: 20px;
+    font-size: 1.3em;
+    text-align: center;
 }
 
-#szukaj img {
+.szukaj {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    margin: 30px 0;
+    border: 2px solid black;
+    border-radius: 30px;
+    width: 800px;
+    height: 70px;
+}
+.szukaj input {
+    margin: 0;
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 1.6em;
+    padding-left: 20px;
+}
+.szukaj button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+}
+.szukaj button img {
     width: 50px;
+}
+
+.wynikiSzukania .szukaj {
+    font-size: 0.8em;
+    width: 600px;
+    height: 60px;
+}
+.wynikiSzukania h1 {
+    font-size: 1.5em;
+}
+#brakWynikowSzukania {
+    margin-top: 50px;
+}
+
+#podzialWyszukiwan {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin: 0 4vw;
+}
+.listaWynikow {
+    flex: 1;
+    background-color: #dce4ff;
+    padding: 15px;
+    border-radius: 20px;
+    height: fit-content;
+}
+
+.wynik {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #646464;
+}
+.wynik:last-child {
+    border-bottom: none;
+}
+.wynik img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
 }
 
 .blokInformacje h1 {

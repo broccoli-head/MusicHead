@@ -9,10 +9,15 @@ class Spotify:
             client_id = settings.SPOTIFY_CLIENT_ID,
             client_secret = settings.SPOTIFY_CLIENT_SECRET,
         ))
+        spotifyWyniki = []
+        wyniki = sp.search(q = fraza, type = "track", limit = 10)
 
-        results = sp.search(q = fraza, type = "track", limit = 10)
+        for piosenka in wyniki['tracks']['items']:
+            spotifyWyniki.append({
+                'idPiosenki': piosenka['id'],
+                'tytul': piosenka['name'],
+                'wykonawcy': ', '.join(artist['name'] for artist in piosenka['artists']),
+                'okladka': piosenka['album']['images'][0]['url'] if piosenka['album']['images'] else None
+            })
 
-        for track in results['tracks']['items']:
-            title = track['name']
-            artists = ", ".join(artist["name"] for artist in track["artists"])
-            print(title + " - " + artists)
+        return spotifyWyniki

@@ -2,8 +2,12 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Avg
+from django.db.models import Avg, Q
+from spotipy.oauth2 import SpotifyClientCredentials
+from django.conf import settings
+import spotipy
 
+from .spotify import Spotify
 from .models import Piosenka, Statystyki, Opinia
 
 
@@ -97,84 +101,123 @@ def dodaj_piosenke(request):
     return render(request, "strona/dodaj.html")
 
 
-def informacje(request, piosenkaID):
-    piosenka = get_object_or_404(Piosenka, id = piosenkaID)
-    wiadomosc = ""
-    listaOpinii = Opinia.objects.filter(idPiosenki = piosenkaID)
-    iloscOpinii = listaOpinii.count()
 
-    srednia = listaOpinii.aggregate(Avg('ocena'))['ocena__avg']
-    if srednia is None:
-        srednia = 0
-
-
-    if request.user.is_authenticated:
-        opiniaUzytkownika = Opinia.objects.filter(uzytkownik = request.user, idPiosenki = piosenka.id).first()
-        opinieInnych = listaOpinii.exclude(uzytkownik = request.user)
-    else:
-        opiniaUzytkownika = ""
-        opinieInnych = Opinia.objects.filter(idPiosenki = piosenkaID)
+def szukaj(request):
+    zapytanie = request.GET.get('q', '')
+    wynikiLokalne = Piosenka.objects.filter(
+        Q(tytul__icontains = zapytanie) | Q(wykonawcy__icontains = zapytanie) | Q(album__icontains = zapytanie)
+    )[:30] if zapytanie else []
     
-
-    if not opinieInnych and opiniaUzytkownika:
-        opinieWiadomosc = "Jesteś jedyną osobą, która oceniła tą piosenkę."
-    else:
-        opinieWiadomosc = "Ta piosenka nie ma jeszcze żadnych opinii. Bądź pierwszy!"
-
-
-    if request.method == 'POST':
-        if opiniaUzytkownika:
-            if request.POST.get("usunOpinie") == "1":
-                opiniaUzytkownika.delete()
-                return redirect('strona:informacje', piosenkaID = piosenka.id)
-            else:
-                wiadomosc = "Już dodałeś opinię do tej piosenki!"
-            
-        else:
-            ocena = request.POST.get("ocena")
-            komentarz = request.POST.get("komentarz")
-            
-            if ocena:
-                try:
-                    numer = float(ocena)
-                    
-                    if numer != int(numer) or not (1 <= int(numer) <= 5):
-                        wiadomosc = "Ocena musi być liczbą całkowitą od 1 do 5!"
-                    elif len(komentarz) > 500:
-                        wiadomosc = "Komentarz nie może mieć więcej niż 500 znaków!"
-
-                    else:
-                        opinia = Opinia.objects.create(
-                            idPiosenki = piosenka.id, uzytkownik = request.user,
-                            ocena = numer, komentarz = komentarz
-                        )
-            
-                        dane = Statystyki.objects.get(uzytkownik = request.user)
-                        dane.iloscOcen += 1
-                        
-                        if komentarz:
-                            dane.iloscKomentarzy += 1
-                        
-                        dane.save()
-                        return redirect('strona:informacje', piosenkaID = piosenka.id)
-
-                except ValueError:
-                    wiadomosc = "Ocena musi być liczbą!"
-            else:
-                wiadomosc = "Musisz podać ocenę!"
-
-
+    wynikiSpotify = Spotify.szukaj(zapytanie)
     context = {
-        "piosenka": piosenka,
-        "srednia": srednia,
-        "iloscOpinii": iloscOpinii,
-        "opinie": opinieInnych,
-        "iloscGwiazdek": range(1, 6),
-        "wiadomosc": wiadomosc,
-        "opiniaUzytkownika": opiniaUzytkownika,
-        "opinieWiadomosc": opinieWiadomosc
+        'zapytanie': zapytanie,
+        'wynikiLokalne': wynikiLokalne,
+        'wynikiSpotify': wynikiSpotify
     }
-    return render(request, 'strona/informacje.html', context)
+    return render(request, 'strona/szukaj.html', context)    
+
+
+
+def informacje(request, piosenkaID):
+    
+    if not piosenkaID.isdigit():
+        sp = spotipy.Spotify(auth_manager = SpotifyClientCredentials(
+            client_id = settings.SPOTIFY_CLIENT_ID,
+            client_secret = settings.SPOTIFY_CLIENT_SECRET,
+        ))
+
+        piosenka = sp.track(piosenkaID)
+
+        szczegolyPiosenki = {
+            'id': piosenka['id'],
+            'tytul': piosenka['name'],
+            'wykonawcy': ', '.join(artist['name'] for artist in piosenka['artists']),
+            'okladka': piosenka['album']['images'][0]['url'] if piosenka['album']['images'] else None,
+            'link': piosenka['external_urls']['spotify']
+        }
+
+        return render(request, 'strona/informacje.html', {'piosenka': piosenka})
+
+
+    else:
+        piosenka = get_object_or_404(Piosenka, id = piosenkaID)
+
+        wiadomosc = ""
+        listaOpinii = Opinia.objects.filter(idPiosenki = piosenkaID)
+        iloscOpinii = listaOpinii.count()
+
+        srednia = listaOpinii.aggregate(Avg('ocena'))['ocena__avg']
+        if srednia is None:
+            srednia = 0
+
+
+        if request.user.is_authenticated:
+            opiniaUzytkownika = Opinia.objects.filter(uzytkownik = request.user, idPiosenki = piosenka.id).first()
+            opinieInnych = listaOpinii.exclude(uzytkownik = request.user)
+        else:
+            opiniaUzytkownika = ""
+            opinieInnych = Opinia.objects.filter(idPiosenki = piosenkaID)
+        
+
+        if not opinieInnych and opiniaUzytkownika:
+            opinieWiadomosc = "Jesteś jedyną osobą, która oceniła tą piosenkę."
+        else:
+            opinieWiadomosc = "Ta piosenka nie ma jeszcze żadnych opinii. Bądź pierwszy!"
+
+
+        if request.method == 'POST':
+            if opiniaUzytkownika:
+                if request.POST.get("usunOpinie") == "1":
+                    opiniaUzytkownika.delete()
+                    return redirect('strona:informacje', piosenkaID = piosenka.id)
+                else:
+                    wiadomosc = "Już dodałeś opinię do tej piosenki!"
+                
+            else:
+                ocena = request.POST.get("ocena")
+                komentarz = request.POST.get("komentarz")
+                
+                if ocena:
+                    try:
+                        numer = float(ocena)
+                        
+                        if numer != int(numer) or not (1 <= int(numer) <= 5):
+                            wiadomosc = "Ocena musi być liczbą całkowitą od 1 do 5!"
+                        elif len(komentarz) > 500:
+                            wiadomosc = "Komentarz nie może mieć więcej niż 500 znaków!"
+
+                        else:
+                            opinia = Opinia.objects.create(
+                                idPiosenki = piosenka.id, uzytkownik = request.user,
+                                ocena = numer, komentarz = komentarz
+                            )
+                
+                            dane = Statystyki.objects.get(uzytkownik = request.user)
+                            dane.iloscOcen += 1
+                            
+                            if komentarz:
+                                dane.iloscKomentarzy += 1
+                            
+                            dane.save()
+                            return redirect('strona:informacje', piosenkaID = piosenka.id)
+
+                    except ValueError:
+                        wiadomosc = "Ocena musi być liczbą!"
+                else:
+                    wiadomosc = "Musisz podać ocenę!"
+
+
+        context = {
+            "piosenka": piosenka,
+            "srednia": srednia,
+            "iloscOpinii": iloscOpinii,
+            "opinie": opinieInnych,
+            "iloscGwiazdek": range(1, 6),
+            "wiadomosc": wiadomosc,
+            "opiniaUzytkownika": opiniaUzytkownika,
+            "opinieWiadomosc": opinieWiadomosc
+        }
+        return render(request, 'strona/informacje.html', context)
 
 
 
