@@ -6,8 +6,8 @@
 <main class="margines">
     <div id="piosenkaInfo">
         <div class="okladka">
-            {% if piosenka.okladka %}
-                <img src="{{ piosenka.okladka.url }}" width="300">
+            {% if okladka %}
+                <img src="{{ okladka }}" width="300">
             {% else %}
                 <img class="bezOkladki" src="{% static 'icons/album.svg' %}">
             {% endif %}
@@ -17,15 +17,18 @@
             <h1 class="tytul">{{ piosenka.tytul }}</h1>
             <h1 class="artysci">{{ piosenka.wykonawcy}}</h1>
             <p>Album:
-                {% if piosenka.album %} {{ piosenka.album}}
+                {% if piosenka.album %} {{ piosenka.album }}
                 {% else %} Brak {% endif %}
             </p>
+            {% if piosenka.czas %}
+                <p>Długość: {{ piosenka.czas }}</p>
+            {% endif %}
             <p>Gatunek:
-                {% if piosenka.gatunek %} {{ piosenka.gatunek}}
+                {% if piosenka.gatunek %} {{ piosenka.gatunek }}
                 {% else %} Brak {% endif %}
             </p>
             <p>Data wydania:
-                {% if piosenka.data %} {{ piosenka.data}}
+                {% if piosenka.data %} {{ piosenka.data }}
                 {% else %} Brak {% endif %}
             </p>
             {% if piosenka.link %}

@@ -16,7 +16,7 @@
 
     <div id="podzialWyszukiwan">
         <div class="listaWynikow">
-            <h2>Z bazy danych:</h2>
+            <h2>Wyniki z bazy danych:</h2>
             
             {% for piosenka in wynikiLokalne %}
                 <div class="wynik">
@@ -36,12 +36,11 @@
         </div>
 
         <div class="listaWynikow">
-            <h2>Ze Spotify:</h2>
+            <h2>Wyniki ze Spotify:</h2>
             {% for piosenka in wynikiSpotify %}
                 <div class="wynik">
                     {% if piosenka.okladka %}
-                        <p>{{ piosenka.okladka.url }}</p>
-                        <img src="{{ piosenka.okladka.url }}" width="100">
+                        <img src="{{ piosenka.okladka }}" width="100">
                     {% else %}
                         <img class="bezOkladki" src="{% static 'icons/album.svg' %}">
                     {% endif %}

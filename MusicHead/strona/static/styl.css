@@ -82,6 +82,7 @@ main h1 {
 
 .margines {
     margin: 120px 15vw;
+    margin-bottom: 0;
 }
 
 form label {
@@ -185,7 +186,7 @@ form input {
     display: none;
     width: 200px;
     height: 200px;
-    object-fit: cover;
+    object-fit: fill;
     border: dashed 3px #303959;
 }
 
@@ -401,12 +402,16 @@ form .errorlist {
     gap: 20px;
     margin: 0 4vw;
 }
+
 .listaWynikow {
     flex: 1;
     background-color: #dce4ff;
     padding: 15px;
     border-radius: 20px;
     height: fit-content;
+}
+.listaWynikow h2 {
+    text-align: center;
 }
 
 .wynik {

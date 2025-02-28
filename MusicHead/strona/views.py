@@ -3,9 +3,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Avg, Q
-from spotipy.oauth2 import SpotifyClientCredentials
-from django.conf import settings
-import spotipy
 
 from .spotify import Spotify
 from .models import Piosenka, Statystyki, Opinia
@@ -120,104 +117,100 @@ def szukaj(request):
 
 def informacje(request, piosenkaID):
     
+    okladka = None
     if not piosenkaID.isdigit():
-        sp = spotipy.Spotify(auth_manager = SpotifyClientCredentials(
-            client_id = settings.SPOTIFY_CLIENT_ID,
-            client_secret = settings.SPOTIFY_CLIENT_SECRET,
-        ))
-
-        piosenka = sp.track(piosenkaID)
-
-        szczegolyPiosenki = {
-            'id': piosenka['id'],
-            'tytul': piosenka['name'],
-            'wykonawcy': ', '.join(artist['name'] for artist in piosenka['artists']),
-            'okladka': piosenka['album']['images'][0]['url'] if piosenka['album']['images'] else None,
-            'link': piosenka['external_urls']['spotify']
-        }
-
-        return render(request, 'strona/informacje.html', {'piosenka': piosenka})
-
-
+        piosenka = Spotify.informacje(piosenkaID)
+        okladka = piosenka.get('okladka')
     else:
         piosenka = get_object_or_404(Piosenka, id = piosenkaID)
+        okladka = piosenka.okladka.url if piosenka.okladka else None
 
-        wiadomosc = ""
-        listaOpinii = Opinia.objects.filter(idPiosenki = piosenkaID)
-        iloscOpinii = listaOpinii.count()
+    wiadomosc = ""
+    listaOpinii = Opinia.objects.filter(idPiosenki = piosenkaID)
+    iloscOpinii = listaOpinii.count()
 
-        srednia = listaOpinii.aggregate(Avg('ocena'))['ocena__avg']
-        if srednia is None:
-            srednia = 0
-
-
-        if request.user.is_authenticated:
-            opiniaUzytkownika = Opinia.objects.filter(uzytkownik = request.user, idPiosenki = piosenka.id).first()
-            opinieInnych = listaOpinii.exclude(uzytkownik = request.user)
-        else:
-            opiniaUzytkownika = ""
-            opinieInnych = Opinia.objects.filter(idPiosenki = piosenkaID)
-        
-
-        if not opinieInnych and opiniaUzytkownika:
-            opinieWiadomosc = "Jesteś jedyną osobą, która oceniła tą piosenkę."
-        else:
-            opinieWiadomosc = "Ta piosenka nie ma jeszcze żadnych opinii. Bądź pierwszy!"
+    srednia = listaOpinii.aggregate(Avg('ocena'))['ocena__avg']
+    if srednia is None:
+        srednia = 0
 
 
-        if request.method == 'POST':
-            if opiniaUzytkownika:
-                if request.POST.get("usunOpinie") == "1":
-                    opiniaUzytkownika.delete()
-                    return redirect('strona:informacje', piosenkaID = piosenka.id)
-                else:
-                    wiadomosc = "Już dodałeś opinię do tej piosenki!"
+    if request.user.is_authenticated:
+        opiniaUzytkownika = Opinia.objects.filter(uzytkownik = request.user, idPiosenki = piosenkaID).first()
+        opinieInnych = listaOpinii.exclude(uzytkownik = request.user)
+    else:
+        opiniaUzytkownika = ""
+        opinieInnych = Opinia.objects.filter(idPiosenki = piosenkaID)
+    
+
+    if not opinieInnych and opiniaUzytkownika:
+        opinieWiadomosc = "Jesteś jedyną osobą, która oceniła tą piosenkę."
+    else:
+        opinieWiadomosc = "Ta piosenka nie ma jeszcze żadnych opinii. Bądź pierwszy!"
+
+
+    if request.method == 'POST':
+        if opiniaUzytkownika:
+            if request.POST.get("usunOpinie") == "1":
+                dane = Statystyki.objects.get(uzytkownik = request.user)
+                if dane.iloscOcen > 0:
+                    dane.iloscOcen -= 1
+
+                if opiniaUzytkownika.komentarz and dane.iloscKomentarzy > 0:
+                    dane.iloscKomentarzy -= 1
                 
+                dane.save()
+                opiniaUzytkownika.delete()
+                return redirect('strona:informacje', piosenkaID)
+            
             else:
-                ocena = request.POST.get("ocena")
-                komentarz = request.POST.get("komentarz")
-                
-                if ocena:
-                    try:
-                        numer = float(ocena)
+                wiadomosc = "Już dodałeś opinię do tej piosenki!"
+            
+        else:
+            ocena = request.POST.get("ocena")
+            komentarz = request.POST.get("komentarz")
+            
+            if ocena:
+                try:
+                    numer = float(ocena)
+                    
+                    if numer != int(numer) or not (1 <= int(numer) <= 5):
+                        wiadomosc = "Ocena musi być liczbą całkowitą od 1 do 5!"
+                    elif len(komentarz) > 500:
+                        wiadomosc = "Komentarz nie może mieć więcej niż 500 znaków!"
+
+                    else:
+                        opinia = Opinia.objects.create(
+                            idPiosenki = piosenkaID, uzytkownik = request.user,
+                            ocena = numer, komentarz = komentarz
+                        )
+            
+                        dane = Statystyki.objects.get(uzytkownik = request.user)
+                        dane.iloscOcen += 1
                         
-                        if numer != int(numer) or not (1 <= int(numer) <= 5):
-                            wiadomosc = "Ocena musi być liczbą całkowitą od 1 do 5!"
-                        elif len(komentarz) > 500:
-                            wiadomosc = "Komentarz nie może mieć więcej niż 500 znaków!"
+                        if komentarz:
+                            dane.iloscKomentarzy += 1
+                        
+                        dane.save()
+                        return redirect('strona:informacje', piosenkaID)
 
-                        else:
-                            opinia = Opinia.objects.create(
-                                idPiosenki = piosenka.id, uzytkownik = request.user,
-                                ocena = numer, komentarz = komentarz
-                            )
-                
-                            dane = Statystyki.objects.get(uzytkownik = request.user)
-                            dane.iloscOcen += 1
-                            
-                            if komentarz:
-                                dane.iloscKomentarzy += 1
-                            
-                            dane.save()
-                            return redirect('strona:informacje', piosenkaID = piosenka.id)
-
-                    except ValueError:
-                        wiadomosc = "Ocena musi być liczbą!"
-                else:
-                    wiadomosc = "Musisz podać ocenę!"
+                except ValueError:
+                    wiadomosc = "Ocena musi być liczbą!"
+            else:
+                wiadomosc = "Musisz podać ocenę!"
 
 
-        context = {
-            "piosenka": piosenka,
-            "srednia": srednia,
-            "iloscOpinii": iloscOpinii,
-            "opinie": opinieInnych,
-            "iloscGwiazdek": range(1, 6),
-            "wiadomosc": wiadomosc,
-            "opiniaUzytkownika": opiniaUzytkownika,
-            "opinieWiadomosc": opinieWiadomosc
-        }
-        return render(request, 'strona/informacje.html', context)
+    context = {
+        "piosenka": piosenka,
+        "okladka": okladka,
+        "srednia": srednia,
+        "iloscOpinii": iloscOpinii,
+        "opinie": opinieInnych,
+        "iloscGwiazdek": range(1, 6),
+        "wiadomosc": wiadomosc,
+        "opiniaUzytkownika": opiniaUzytkownika,
+        "opinieWiadomosc": opinieWiadomosc
+    }
+    return render(request, 'strona/informacje.html', context)
 
 
 
