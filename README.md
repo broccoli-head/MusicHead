@@ -3,7 +3,7 @@
 Strona jest oparta o framework Django. Głównym zamierzeniem projektu jest szukanie piosenek, sprawdzanie ich szczegółow oraz dodawanie pod nimi opinii. 
 
 📽️ Link do filmu przedstawiającego działanie strony 📽️
-https://youtu.be/bcpdn79W188
+<br>https://youtu.be/bcpdn79W188
 
 # ❗ WAŻNE ❗
 ## 1. MIGRACJE
@@ -12,14 +12,28 @@ Przy pierwszym użyciu, gdy nie ma danych w bazie, należy wykonać migrację (w
 python manage.py makemigrations strona
 python manage.py migrate strona
 ```
-
-UWAGA!
-Samo ```python manage.py makemigrations``` nie wystarczy, musi być z dopiskiem ```strona```.
+lub:
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+**UWAGA!**
+<br>```python manage.py makemigrations``` może nie wystarczyć, więc czasem trzeba dodać dopisek ```strona```, jednak gdzieniegdzie było to zbędne i powodowało błędy. Należy spróbować obu opcji.
 
 
 ## 2. WYMAGANE BIBLIOTEKI 
-Strona używa biblioteki **Pillow** do obsługi zdjęć oraz **Spotipy** do integracji ze Spotify.
-Należy je pobrać, aby uniknąć błędów.
+Strona oprócz całego frameworku Django, używa również bibliotek:
+- **Pillow** do obsługi zdjęć
+- **Spotipy** do integracji ze Spotify.
+
+Wszystkie potrzebne biblioteki znajdują się w pliku ```requirements.txt```. Wystarczy w terminalu wpisać:
+<br>```pip install -r requirements.txt```
+
+
+## 3. KLUCZ SPOTIFY
+
+W settings.py znajdują się klucze aplikacji: ```SPOTIFY_CLIENT_ID``` oraz ```SPOTIFY_CLIENT_SECRET```
+<br>Nie gwarantuję ich działania, dlatego warto utworzyć własną aplikację na: https://developer.spotify.com/ a następnie dodać swoje klucze.
 
 # ⚙️ FUNKCJONALNOŚĆ ⚙️
 Główne funkcje strony:
