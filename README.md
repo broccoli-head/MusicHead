@@ -2,6 +2,8 @@
 
 Strona jest oparta o framework Django. Głównym zamierzeniem projektu jest szukanie piosenek, sprawdzanie ich szczegółow oraz dodawanie pod nimi opinii. 
 
+📽️ Link do filmu przedstawiającego działanie strony 📽️
+https://youtu.be/bcpdn79W188
 
 # ❗ WAŻNE ❗
 ## 1. MIGRACJE
